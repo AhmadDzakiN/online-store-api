@@ -5,7 +5,7 @@ import (
 )
 
 type Customer struct {
-	ID        string    `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID        string    `gorm:"column:id;primary_key;type:uuid;default:uuid_generate_v4()"`
 	Email     string    `gorm:"column:email;unique;not null"`
 	Password  string    `gorm:"column:password;not null"`
 	Name      string    `gorm:"column:name;not null"`

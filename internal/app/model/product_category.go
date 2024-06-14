@@ -5,7 +5,7 @@ import (
 )
 
 type ProductCategory struct {
-	ID          string    `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID          string    `gorm:"column:id;primary_key;type:uuid;default:uuid_generate_v4()"`
 	Name        string    `gorm:"column:name;not null"`
 	Description string    `gorm:"column:description;not null"`
 	CreatedAt   time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP;not null"`

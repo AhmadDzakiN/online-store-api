@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Order struct {
-	ID            uint64    `gorm:"primary_key;auto_increment"`
+	ID            uint64    `gorm:"column:id;primary_key;auto_increment"`
 	CustomerID    string    `gorm:"column:customer_id;not null"`
 	TotalAmount   uint64    `gorm:"column:total_amount;not null"`
 	PaymentStatus uint      `gorm:"column:payment_status;not null"`

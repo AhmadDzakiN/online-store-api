@@ -1,16 +1,18 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
-type OrderItem struct {
-	ID        uint64    `gorm:"column:id;primary_key;auto_increment"`
-	OrderID   uint64    `gorm:"column:order_id;not null"`
+type CartItem struct {
+	ID        uint64    `gorm:"column:id;primary_key;autoIncrement"`
+	CartID    uint64    `gorm:"column:cart_id;not null"`
 	ProductID string    `gorm:"column:product_id;not null"`
 	Quantity  uint      `gorm:"column:quantity;not null"`
 	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP;not null"`
 	UpdatedAt time.Time `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;not null"`
 }
 
-func (oi *OrderItem) TableName() string {
-	return "order_items"
+func (ci *CartItem) TableName() string {
+	return "cart_items"
 }
