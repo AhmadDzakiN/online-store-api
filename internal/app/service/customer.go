@@ -68,7 +68,7 @@ func (s *CustomerService) Register(ctx echo.Context, req payloads.RegisterReques
 
 	err = s.CustomerRepo.Create(ctx.Request().Context(), &newCustomer)
 	if err != nil {
-		log.Err(err).Msgf("Failed to create a new Customer for email %s", req.Email)
+		log.Err(err).Msgf("Failed to create a new customer for email %s", req.Email)
 		return
 	}
 
@@ -94,14 +94,14 @@ func (s *CustomerService) Login(ctx echo.Context, req payloads.LoginRequest) (re
 
 	isValid := hash.CheckPasswordHash(req.Password, customer.Password)
 	if !isValid {
-		log.Error().Msgf("Password does not match for Customer %s", req.Email)
+		log.Error().Msgf("Password does not match for customer %s", req.Email)
 		err = echo.NewHTTPError(http.StatusUnauthorized, "Password does not match")
 		return
 	}
 
 	jwtToken, err := jwt.CreateToken(customer.ID, customer.Name)
 	if err != nil {
-		log.Err(err).Msgf("Failed to create token for Customer %s", req.Email)
+		log.Err(err).Msgf("Failed to create token for customer %s", req.Email)
 		return
 	}
 

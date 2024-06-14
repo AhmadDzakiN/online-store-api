@@ -1,0 +1,43 @@
+INSERT INTO payment_statuses (name, description) VALUES ('PENDING', 'Still waiting for payment from the user');
+INSERT INTO payment_statuses (name, description) VALUES ('PAID', 'Payment already paid by the user');
+INSERT INTO payment_statuses (name, description) VALUES ('EXPIRED', 'Payment is already expired');
+INSERT INTO payment_statuses (name, description) VALUES ('CANCELLED', 'Payment cancelled');
+
+INSERT INTO product_categories (id, name, description) VALUES ('253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'ELEKTRONIK', 'Produk elektronik');
+INSERT INTO product_categories (id, name, description) VALUES ('f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'KENDARAAN', 'Produk kendaraan');
+INSERT INTO product_categories (id, name, description) VALUES ('899f3232-5ce7-401f-a8a8-979a4664e8c1', 'MAKANAN', 'Produk makanan');
+INSERT INTO product_categories (id, name, description) VALUES ('85c11f2a-7895-4773-8196-f60922c4024a', 'KENDARAAN', 'Produk kendaraan');
+INSERT INTO product_categories (id, name, description) VALUES ('352451b1-7650-4c8f-9cb8-0c32df43ffaf', 'PAKAIAN', 'Produk pakaian');
+INSERT INTO product_categories (id, name, description) VALUES ('b9ac37cc-25db-4467-acee-8997edd67d19', 'PERALATAN RUMAH', 'Produk perlatan rumah');
+
+Insert Into products (name, category_id, description, price) Values ('Ergonomic Cotton Chair', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart', '274');
+Insert Into products (name, category_id, description, price) Values ('Unbranded Bronze Tuna', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Football Is Good For Training And Recreational Purposes', '347');
+Insert Into products (name, category_id, description, price) Values ('Small Granite Salad', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016', '191');
+Insert Into products (name, category_id, description, price) Values ('Sleek Soft Motor', 'f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design', '965');
+Insert Into products (name, category_id, description, price) Values ('Handmade Wooden Chips', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive', '529');
+Insert Into products (name, category_id, description, price) Values ('Oriental Bronze Towels', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J', '320');
+Insert Into products (name, category_id, description, price) Values ('Gorgeous Concrete Chicken', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016', '8');
+Insert Into products (name, category_id, description, price) Values ('Rustic Rubber Salad', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive', '731');
+Insert Into products (name, category_id, description, price) Values ('Intelligent Soft Cheese', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support', '490');
+Insert Into products (name, category_id, description, price) Values ('Oriental Rubber Chips', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Football Is Good For Training And Recreational Purposes', '769');
+
+
+Insert Into products (name, category_id, description, price) Values ('Handmade Concrete Keyboard', '253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive', '507');
+Insert Into products (name, category_id, description, price) Values ('Sleek Bronze Chair', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016', '663');
+Insert Into products (name, category_id, description, price) Values ('Fantastic Wooden Hat', '352451b1-7650-4c8f-9cb8-0c32df43ffaf', 'The Football Is Good For Training And Recreational Purposes', '337');
+Insert Into products (name, category_id, description, price) Values ('Modern Plastic Towels', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients', '45');
+Insert Into products (name, category_id, description, price) Values ('Ergonomic Cotton Car', 'f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart', '147');
+Insert Into products (name, category_id, description, price) Values ('Modern Rubber Bike', 'f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016', '636');
+Insert Into products (name, category_id, description, price) Values ('Fantastic Plastic Ball', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'The Football Is Good For Training And Recreational Purposes', '703');
+Insert Into products (name, category_id, description, price) Values ('Recycled Granite Sausages', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J', '58');
+Insert Into products (name, category_id, description, price) Values ('Incredible Metal Chicken', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Football Is Good For Training And Recreational Purposes', '934');
+Insert Into products (name, category_id, description, price) Values ('Licensed Frozen Cheese', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design', '939');
+Insert Into products (name, category_id, description, price) Values ('Fantastic Bronze Chips', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients', '398');
+Insert Into products (name, category_id, description, price) Values ('Generic Wooden Soap', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals', '343');
+Insert Into products (name, category_id, description, price) Values ('Recycled Bronze Cheese', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals', '243');
+Insert Into products (name, category_id, description, price) Values ('Small Granite Chair', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals', '553');
+Insert Into products (name, category_id, description, price) Values ('Fantastic Metal Salad', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design', '1000');
+Insert Into products (name, category_id, description, price) Values ('Sleek Granite Bike', 'f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals', '663');
+Insert Into products (name, category_id, description, price) Values ('Luxurious Bronze Keyboard', '253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals', '7');
+Insert Into products (name, category_id, description, price) Values ('Modern Metal Car', 'f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality', '808');
+Insert Into products (name, category_id, description, price) Values ('Small Rubber Tuna', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Football Is Good For Training And Recreational Purposes', '501');

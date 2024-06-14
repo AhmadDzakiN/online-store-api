@@ -40,7 +40,7 @@ func (r *CustomerRepository) Create(ctx context.Context, newCustomer *model.Cust
 	}
 
 	if result.RowsAffected < 1 {
-		err = errors.New("no new Customer data is created")
+		err = errors.New("no new customer data is created")
 		return
 	}
 

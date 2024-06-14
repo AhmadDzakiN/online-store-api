@@ -19,20 +19,25 @@ type BootstrapAppConfig struct {
 }
 
 func BootstrapApp(config *BootstrapAppConfig) {
-	//cartRepository := repository.NewCartRepository(config.DB)
+	cartRepository := repository.NewCartRepository(config.DB)
+	cartItemRepository := repository.NewCartItemRepository(config.DB)
 	customerRepository := repository.NewCustomerRepository(config.DB)
 	//orderRepository := repository.NewOrderRepository(config.DB)
 	//orderItemRepository := repository.NewOrderItemRepository(config.DB)
 	//paymentStatusRepository := repository.NewPaymentStatusRepository(config.DB)
-	//productRepository := repository.NewProductRepository(config.DB)
+	productRepository := repository.NewProductRepository(config.DB)
 	//productCategoryRepository := repository.NewProductCategoryRepository(config.DB)
 
 	customerService := service.NewCustomerService(config.Validator, customerRepository)
+	cartService := service.NewCartService(config.Validator, config.DB, cartRepository, cartItemRepository, productRepository)
 
+	cartHandler := handler.NewCartHandler(cartService)
 	customerHandler := handler.NewCustomerHandler(customerService)
 
 	routeCfg := router.RouteConfig{
+		CartHandler:     cartHandler,
 		CustomerHandler: customerHandler,
+		Config:          config.Config,
 	}
 
 	router.NewRouter(routeCfg, config.Echo)

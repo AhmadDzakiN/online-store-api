@@ -1,8 +1,9 @@
 package jwt
 
 import (
-	"github.com/golang-jwt/jwt"
-	"os"
+	"errors"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/labstack/echo/v4"
 	"time"
 )
 
@@ -17,8 +18,24 @@ func CreateToken(customerID, name string) (token string, err error) {
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	token, err = jwtToken.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
+	token, err = jwtToken.SignedString([]byte("secret"))
 	if err != nil {
+		return
+	}
+
+	return
+}
+
+func GetTokenClaims(ctx echo.Context) (claims jwt.MapClaims, err error) {
+	token, ok := ctx.Get("user").(*jwt.Token)
+	if !ok {
+		err = errors.New("missing or invalid jwt token")
+		return
+	}
+
+	claims, ok = token.Claims.(jwt.MapClaims)
+	if !ok || token == nil {
+		err = errors.New("invalid token")
 		return
 	}
 
