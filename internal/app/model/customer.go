@@ -1,12 +1,11 @@
 package model
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Customer struct {
-	ID        uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID        string    `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Email     string    `gorm:"column:email;unique;not null"`
 	Password  string    `gorm:"column:password;not null"`
 	Name      string    `gorm:"column:name;not null"`

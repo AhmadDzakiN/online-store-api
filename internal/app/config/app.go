@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"online-store-api/internal/app/delivery/handler"
 	"online-store-api/internal/app/delivery/router"
+	"online-store-api/internal/app/repository"
 	"online-store-api/internal/app/service"
 )
 
@@ -19,14 +20,14 @@ type BootstrapAppConfig struct {
 
 func BootstrapApp(config *BootstrapAppConfig) {
 	//cartRepository := repository.NewCartRepository(config.DB)
-	//customerRepository := repository.NewCustomerRepository(config.DB)
+	customerRepository := repository.NewCustomerRepository(config.DB)
 	//orderRepository := repository.NewOrderRepository(config.DB)
 	//orderItemRepository := repository.NewOrderItemRepository(config.DB)
 	//paymentStatusRepository := repository.NewPaymentStatusRepository(config.DB)
 	//productRepository := repository.NewProductRepository(config.DB)
 	//productCategoryRepository := repository.NewProductCategoryRepository(config.DB)
 
-	customerService := service.NewCustomerService()
+	customerService := service.NewCustomerService(config.Validator, customerRepository)
 
 	customerHandler := handler.NewCustomerHandler(customerService)
 

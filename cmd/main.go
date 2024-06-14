@@ -14,6 +14,8 @@ import (
 
 func main() {
 	e := echo.New()
+	e.Debug = true
+
 	cfg := config.NewViperConfig()
 	log := config.NewLogger(cfg)
 	validator := config.NewValidator()
@@ -29,6 +31,7 @@ func main() {
 		Config:    cfg,
 		Echo:      e,
 	})
+	config.SetCustomErrorHandler(e)
 	startServer(e)
 }
 

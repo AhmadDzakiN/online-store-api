@@ -32,6 +32,6 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 
 	customerGroup := e.Group("/customers")
 	{
-		customerGroup.GET("/register", routeCfg.CustomerHandler.Register)
+		customerGroup.POST("/register", routeCfg.CustomerHandler.Register)
 	}
 }
