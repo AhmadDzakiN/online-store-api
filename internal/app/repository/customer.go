@@ -13,7 +13,7 @@ type CustomerRepository struct {
 
 type ICustomerRepository interface {
 	GetByEmail(ctx context.Context, email string) (customer model.Customer, err error)
-	Create(ctx context.Context, newGenerator *model.Customer) (err error)
+	Create(ctx context.Context, newCustomer *model.Customer) (err error)
 }
 
 func NewCustomerRepository(db *gorm.DB) ICustomerRepository {
@@ -25,14 +25,15 @@ func NewCustomerRepository(db *gorm.DB) ICustomerRepository {
 func (r *CustomerRepository) GetByEmail(ctx context.Context, email string) (customer model.Customer, err error) {
 	result := r.db.WithContext(ctx).Where("email = ?", email).First(&customer)
 	if result.Error != nil {
+		err = result.Error
 		return
 	}
 
 	return
 }
 
-func (r *CustomerRepository) Create(ctx context.Context, newGenerator *model.Customer) (err error) {
-	result := r.db.WithContext(ctx).Create(&newGenerator)
+func (r *CustomerRepository) Create(ctx context.Context, newCustomer *model.Customer) (err error) {
+	result := r.db.WithContext(ctx).Create(&newCustomer)
 	if result.Error != nil {
 		err = result.Error
 		return

@@ -33,3 +33,20 @@ func (h *CustomerHandler) Register(ctx echo.Context) (err error) {
 
 	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
 }
+
+func (h *CustomerHandler) Login(ctx echo.Context) (err error) {
+	var loginReq payloads.LoginRequest
+	err = ctx.Bind(&loginReq)
+	if err != nil {
+		log.Err(err).Msg("Invalid login body request")
+		err = echo.NewHTTPError(http.StatusBadRequest, "Invalid or empty login body request")
+		return
+	}
+
+	resp, err := h.CustomerService.Login(ctx, loginReq)
+	if err != nil {
+		return
+	}
+
+	return ctx.JSON(http.StatusOK, builder.BuildSuccessResponse(resp))
+}

@@ -11,6 +11,7 @@ import (
 	"online-store-api/internal/app/payloads"
 	"online-store-api/internal/app/repository"
 	"online-store-api/internal/pkg/hash"
+	"online-store-api/internal/pkg/jwt"
 )
 
 type CustomerService struct {
@@ -20,6 +21,7 @@ type CustomerService struct {
 
 type ICustomerService interface {
 	Register(ctx echo.Context, req payloads.RegisterRequest) (err error)
+	Login(ctx echo.Context, req payloads.LoginRequest) (resp payloads.LoginResponse, err error)
 }
 
 func NewCustomerService(validate *validator.Validate, customerRepo repository.ICustomerRepository) ICustomerService {
@@ -33,7 +35,7 @@ func (s *CustomerService) Register(ctx echo.Context, req payloads.RegisterReques
 	err = s.Validate.Struct(req)
 	if err != nil {
 		log.Err(err).Msg("Invalid register request body")
-		err = echo.NewHTTPError(http.StatusBadRequest, "Invalid or empty register body request")
+		err = echo.NewHTTPError(http.StatusBadRequest, "invalid or empty register body request")
 		return
 	}
 
@@ -68,6 +70,43 @@ func (s *CustomerService) Register(ctx echo.Context, req payloads.RegisterReques
 	if err != nil {
 		log.Err(err).Msgf("Failed to create a new Customer for email %s", req.Email)
 		return
+	}
+
+	return
+}
+
+func (s *CustomerService) Login(ctx echo.Context, req payloads.LoginRequest) (resp payloads.LoginResponse, err error) {
+	err = s.Validate.Struct(req)
+	if err != nil {
+		log.Err(err).Msg("Invalid login request body")
+		err = echo.NewHTTPError(http.StatusBadRequest, "invalid login request body")
+		return
+	}
+
+	customer, err := s.CustomerRepo.GetByEmail(ctx.Request().Context(), req.Email)
+	if err != nil {
+		log.Err(err).Msgf("Failed to get customer for email %s", req.Email)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = echo.NewHTTPError(http.StatusNotFound, "customer is not found")
+		}
+		return
+	}
+
+	isValid := hash.CheckPasswordHash(req.Password, customer.Password)
+	if !isValid {
+		log.Error().Msgf("Password does not match for Customer %s", req.Email)
+		err = echo.NewHTTPError(http.StatusUnauthorized, "Password does not match")
+		return
+	}
+
+	jwtToken, err := jwt.CreateToken(customer.ID, customer.Name)
+	if err != nil {
+		log.Err(err).Msgf("Failed to create token for Customer %s", req.Email)
+		return
+	}
+
+	resp = payloads.LoginResponse{
+		Token: jwtToken,
 	}
 
 	return

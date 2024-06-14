@@ -1,8 +1,8 @@
 package builder
 
 type SuccessResponse struct {
-	Status string       `json:"status"`
-	Data   *interface{} `json:"data"`
+	Status string      `json:"status"`
+	Data   interface{} `json:"data"`
 }
 
 type ErrorResponse struct {
@@ -10,7 +10,7 @@ type ErrorResponse struct {
 	Error  string `json:"error"`
 }
 
-func BuildSuccessResponse(data *interface{}) SuccessResponse {
+func BuildSuccessResponse(data interface{}) SuccessResponse {
 	return SuccessResponse{
 		Status: "success",
 		Data:   data,
