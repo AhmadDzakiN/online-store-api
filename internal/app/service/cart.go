@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -24,6 +25,7 @@ type CartService struct {
 
 type ICartService interface {
 	AddProduct(ctx echo.Context, req payloads.AddProductRequest) (err error)
+	DeleteProduct(ctx echo.Context, productID string) (err error)
 }
 
 func NewCartService(validate *validator.Validate, db *gorm.DB, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository,
@@ -70,9 +72,9 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 
 	// Customer already have a shopping cart so we just need to create or update cart item based on condition
 	if cart.ID > 0 {
-		cartItem, errCartItem := s.CartItemRepo.GetByCartIDAndProductID(ctx.Request().Context(), cart.ID, product.ID)
+		cartItem, errCartItem := s.CartItemRepo.GetActiveByCartIDAndProductID(ctx.Request().Context(), cart.ID, product.ID)
 		if errCartItem != nil && !errors.Is(errCartItem, gorm.ErrRecordNotFound) { // if cart item not found, then create a new one
-			log.Err(err).Msgf("Failed to get cart item by cart id %s", cart.ID)
+			log.Err(err).Msgf("Failed to get cart item by cart id %d", cart.ID)
 			return
 		}
 
@@ -82,7 +84,7 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 			cartItem.UpdatedAt = time.Now()
 			err = s.CartItemRepo.Update(ctx.Request().Context(), cartItem)
 			if err != nil {
-				log.Err(err).Msgf("Failed to update cart item for id %s", cartItem.ID)
+				log.Err(err).Msgf("Failed to update cart item for id %d", cartItem.ID)
 				return
 			}
 		} else {
@@ -94,7 +96,7 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 
 			err = s.CartItemRepo.Create(ctx.Request().Context(), &newCartItem, nil)
 			if err != nil {
-				log.Err(err).Msgf("Failed to create a new cart item for cart id %s", cart.ID)
+				log.Err(err).Msgf("Failed to create a new cart item for cart id %d", cart.ID)
 				return
 			}
 		}
@@ -123,13 +125,63 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 
 	err = s.CartItemRepo.Create(ctx.Request().Context(), &newCartItem, trx)
 	if err != nil {
-		log.Err(err).Msgf("Failed to create a new cart item for cart id %s", newCart.ID)
+		log.Err(err).Msgf("Failed to create a new cart item for cart id %d", newCart.ID)
 		return
 	}
 
 	commitRes := trx.Commit()
 	if commitRes.Error != nil {
 		log.Err(err).Msg("Failed to commit transaction for add product flow")
+		return
+	}
+
+	return
+}
+
+func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err error) {
+	product, err := s.ProductRepo.GetByID(ctx.Request().Context(), productID)
+	if err != nil {
+		log.Err(err).Msgf("Failed to get product by id %s", productID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = echo.NewHTTPError(http.StatusNotFound, "product is not found")
+		}
+		return
+	}
+
+	jwtClaims, err := jwt.GetTokenClaims(ctx)
+	if err != nil {
+		log.Err(err).Msg("Failed to get jwt token claims")
+		err = echo.NewHTTPError(http.StatusUnauthorized, "Failed to get jwt token claims")
+		return
+	}
+
+	customerID := jwtClaims["customer_id"].(string)
+	cart, err := s.CartRepo.GetByCustomerID(ctx.Request().Context(), customerID)
+	if err != nil {
+		log.Err(err).Msgf("Failed to get cart by customer id %s", customerID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = echo.NewHTTPError(http.StatusNotFound, "cart is not found")
+		}
+		return
+	}
+
+	cartItem, err := s.CartItemRepo.GetActiveByCartIDAndProductID(ctx.Request().Context(), cart.ID, product.ID)
+	if err != nil {
+		log.Err(err).Msgf("Failed to get cart item by cart id %d", cart.ID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = echo.NewHTTPError(http.StatusNotFound, "cart item is not found")
+		}
+		return
+	}
+
+	// No need to delete the cart too if the cart does not have any cart item
+	now := time.Now()
+	cartItem.DeletedAt = sql.NullTime{Time: now, Valid: true}
+	cartItem.Quantity = 0
+	cartItem.UpdatedAt = now
+	err = s.CartItemRepo.Update(ctx.Request().Context(), cartItem)
+	if err != nil {
+		log.Err(err).Msgf("Failed to delete cart item for id %d", cartItem.ID)
 		return
 	}
 

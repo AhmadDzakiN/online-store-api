@@ -43,5 +43,6 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 	{
 		cartGroup.Use(echojwt.JWT([]byte(routeCfg.Config.GetString("JWT_SECRET_KEY"))))
 		cartGroup.POST("", routeCfg.CartHandler.AddProduct)
+		cartGroup.DELETE("/:product_id", routeCfg.CartHandler.DeleteProduct)
 	}
 }

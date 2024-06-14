@@ -53,3 +53,18 @@ func (r *CartRepository) Create(ctx context.Context, newCart *model.Cart, trx *g
 
 	return
 }
+
+func (r *CartRepository) Update(ctx context.Context, updatedCart model.Cart) (err error) {
+	result := r.db.WithContext(ctx).Save(updatedCart)
+	if result.Error != nil {
+		err = result.Error
+		return
+	}
+
+	if result.RowsAffected < 1 {
+		err = errors.New("no new cart data is updated")
+		return
+	}
+
+	return
+}

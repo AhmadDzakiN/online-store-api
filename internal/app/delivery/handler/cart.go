@@ -33,3 +33,13 @@ func (h *CartHandler) AddProduct(ctx echo.Context) (err error) {
 
 	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
 }
+
+func (h *CartHandler) DeleteProduct(ctx echo.Context) (err error) {
+	productID := ctx.Param("product_id")
+	err = h.CartService.DeleteProduct(ctx, productID)
+	if err != nil {
+		return
+	}
+
+	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
+}
