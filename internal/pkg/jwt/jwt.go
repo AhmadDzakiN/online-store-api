@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"os"
 	"time"
 )
 
@@ -18,7 +19,7 @@ func CreateToken(customerID, name string) (token string, err error) {
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	token, err = jwtToken.SignedString([]byte("secret"))
+	token, err = jwtToken.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	if err != nil {
 		return
 	}
