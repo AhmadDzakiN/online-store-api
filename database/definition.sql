@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS payment_statuses (
+CREATE TABLE IF NOT EXISTS order_statuses (
     id SERIAL PRIMARY KEY,
     name varchar(100) NOT NULL,
     description varchar(255) NOT NULL,
@@ -57,19 +57,19 @@ CREATE TABLE IF NOT EXISTS payment_statuses (
 );
 
 CREATE TABLE IF NOT EXISTS orders (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     customer_id uuid NOT NULL,
     total_amount BIGINT NOT NULL,
-    payment_status INT NOT NULL,
+    status_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
-    FOREIGN KEY (payment_status) REFERENCES payment_statuses(id) ON DELETE CASCADE
+    FOREIGN KEY (status_id) REFERENCES order_statuses(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
     id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT NOT NULL,
+    order_id UUID NOT NULL,
     product_id UUID NOT NULL,
     quantity INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -28,7 +28,7 @@ type CartService struct {
 type ICartService interface {
 	AddProduct(ctx echo.Context, req payloads.AddProductRequest) (err error)
 	DeleteProduct(ctx echo.Context, productID string) (err error)
-	View(ctx echo.Context, pageToken string) (resp []payloads.ViewCartResponse, nextPageToken string, err error)
+	View(ctx echo.Context, pageToken string) (resp payloads.ViewCartResponse, nextPageToken string, err error)
 }
 
 func NewCartService(validate *validator.Validate, db *gorm.DB, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository,
@@ -147,6 +147,7 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 		log.Err(err).Msgf("Failed to get product by id %s", productID)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = echo.NewHTTPError(http.StatusNotFound, "product is not found")
+			return
 		}
 		return
 	}
@@ -191,7 +192,7 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 	return
 }
 
-func (s *CartService) View(ctx echo.Context, pageToken string) (resp []payloads.ViewCartResponse, nextPageToken string, err error) {
+func (s *CartService) View(ctx echo.Context, pageToken string) (resp payloads.ViewCartResponse, nextPageToken string, err error) {
 	jwtClaims, err := jwt.GetTokenClaims(ctx)
 	if err != nil {
 		log.Err(err).Msg("Failed to get jwt token claims")
@@ -219,8 +220,10 @@ func (s *CartService) View(ctx echo.Context, pageToken string) (resp []payloads.
 	}
 
 	// No need to return error when user do not have any active cart items
+	var cartItemListResp []payloads.CartItemResponse
 	for _, item := range items {
-		resp = append(resp, payloads.ViewCartResponse{
+		cartItemListResp = append(cartItemListResp, payloads.CartItemResponse{
+			CartItemID:      item.CartItemID,
 			ProductID:       item.ProductID,
 			ProductName:     item.ProductName,
 			ProductPrice:    item.ProductPrice,
@@ -229,7 +232,10 @@ func (s *CartService) View(ctx echo.Context, pageToken string) (resp []payloads.
 		})
 	}
 
-	nextPageToken = pagination.CreatePageToken(resp, constants.LimitDataPerPage)
+	nextPageToken = pagination.CreatePageToken(cartItemListResp, constants.LimitDataPerPage)
+
+	resp.CartID = items[0].CartID
+	resp.Items = cartItemListResp
 
 	return
 }

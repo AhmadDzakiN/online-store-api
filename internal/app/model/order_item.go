@@ -4,7 +4,7 @@ import "time"
 
 type OrderItem struct {
 	ID        uint64    `gorm:"column:id;primary_key;auto_increment"`
-	OrderID   uint64    `gorm:"column:order_id;not null"`
+	OrderID   string    `gorm:"column:order_id;not null"`
 	ProductID string    `gorm:"column:product_id;not null"`
 	Quantity  uint      `gorm:"column:quantity;not null"`
 	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP;not null"`

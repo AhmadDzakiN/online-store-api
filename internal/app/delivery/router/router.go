@@ -12,6 +12,7 @@ import (
 type RouteConfig struct {
 	CustomerHandler *handler.CustomerHandler
 	CartHandler     *handler.CartHandler
+	OrderHandler    *handler.OrderHandler
 	ProductHandler  *handler.ProductHandler
 	Config          *viper.Viper
 }
@@ -33,6 +34,8 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 		return ctx.JSON(http.StatusOK, "OK!")
 	})
 
+	jwtSecretKey := routeCfg.Config.GetString("JWT_SECRET_KEY")
+
 	customerGroup := e.Group("/customers")
 	{
 		customerGroup.POST("/register", routeCfg.CustomerHandler.Register)
@@ -41,7 +44,7 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 
 	cartGroup := e.Group("/carts")
 	{
-		cartGroup.Use(echojwt.JWT([]byte(routeCfg.Config.GetString("JWT_SECRET_KEY"))))
+		cartGroup.Use(echojwt.JWT([]byte(jwtSecretKey)))
 		cartGroup.POST("", routeCfg.CartHandler.AddProduct)
 		cartGroup.DELETE("/:product_id", routeCfg.CartHandler.DeleteProduct)
 		cartGroup.GET("", routeCfg.CartHandler.View)
@@ -50,5 +53,11 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 	productGroup := e.Group("/products")
 	{
 		productGroup.GET("/categories/:category_id", routeCfg.ProductHandler.ViewByCategoryID)
+	}
+
+	orderGroup := e.Group("/orders")
+	{
+		orderGroup.Use(echojwt.JWT([]byte(jwtSecretKey)))
+		orderGroup.POST("", routeCfg.OrderHandler.Checkout)
 	}
 }

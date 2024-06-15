@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"online-store-api/internal/app/constants"
 	"online-store-api/internal/app/model"
@@ -17,9 +19,9 @@ type ICartItemRepository interface {
 	GetActiveByCartIDAndProductID(ctx context.Context, cartID uint64, productID string) (cartItem model.CartItem, err error)
 	Create(ctx context.Context, newCartItem *model.CartItem, trx *gorm.DB) (err error)
 	Update(ctx context.Context, updatedCartItem model.CartItem) (err error)
-	GetActiveByCartID(ctx context.Context, cartID uint64) (cartItem model.CartItem, err error)  // TODO  DELETE THIS IF NOT BEING USED
-	CountActiveByCartID(ctx context.Context, cartID uint64) (countActiveItems int64, err error) // TODO  DELETE THIS IF NOT BEING USED
 	GetActiveItemsAndProductsByCartID(ctx context.Context, cartID uint64, lastCreated int64) (data []model.CartItemJoinProduct, err error)
+	CheckExistingIDs(ctx context.Context, cartItemIDs []uint64, cartID uint64) (err error)
+	UpdateToDeleted(ctx context.Context, cartItemIDs []uint64, trx *gorm.DB) (err error)
 }
 
 func NewCartItemRepository(db *gorm.DB) ICartItemRepository {
@@ -96,7 +98,7 @@ func (r *CartItemRepository) CountActiveByCartID(ctx context.Context, cartID uin
 }
 
 func (r *CartItemRepository) GetActiveItemsAndProductsByCartID(ctx context.Context, cartID uint64, lastCreated int64) (data []model.CartItemJoinProduct, err error) {
-	query := r.db.WithContext(ctx).Select("c.product_id, p.name, p.price, c.quantity, c.updated_at").Table("cart_items c").
+	query := r.db.WithContext(ctx).Select("c.cart_id, c.id as cart_item_id, c.product_id, p.name, p.price, c.quantity, c.updated_at").Table("cart_items c").
 		Joins("INNER JOIN products p ON c.product_id = p.id").Where("c.cart_id = ? AND c.deleted_at IS NULL AND c.quantity != 0", cartID).
 		Order("c.updated_at DESC")
 
@@ -108,6 +110,62 @@ func (r *CartItemRepository) GetActiveItemsAndProductsByCartID(ctx context.Conte
 	result := query.Find(&data)
 	if result.Error != nil {
 		err = result.Error
+		return
+	}
+
+	return
+}
+
+func (r *CartItemRepository) CheckExistingIDs(ctx context.Context, cartItemIDs []uint64, cartID uint64) (err error) {
+	var validIDs []uint64
+	result := r.db.WithContext(ctx).Select("id").Table("cart_items").
+		Where("cart_id = ? AND id IN (?) AND deleted_at IS NULL AND quantity != 0", cartID, cartItemIDs).Find(&validIDs)
+	if result.Error != nil {
+		err = result.Error
+		return
+	}
+
+	validIDMap := make(map[uint64]bool)
+	for _, validID := range validIDs {
+		validIDMap[validID] = true
+	}
+
+	var invalidIDs []uint64
+	for _, id := range cartItemIDs {
+		if !validIDMap[id] {
+			invalidIDs = append(invalidIDs, id)
+		}
+	}
+
+	if len(invalidIDs) > 0 {
+		err = fmt.Errorf("cart item IDs %v does not exist", invalidIDs)
+		return
+	}
+
+	return
+}
+
+func (r *CartItemRepository) UpdateToDeleted(ctx context.Context, cartItemIDs []uint64, trx *gorm.DB) (err error) {
+	var db *gorm.DB
+	if trx == nil {
+		db = r.db.WithContext(ctx)
+	} else {
+		db = trx
+	}
+
+	now := time.Now()
+	result := db.Where("id in (?)", cartItemIDs).Updates(model.CartItem{
+		DeletedAt: sql.NullTime{Time: now, Valid: true},
+		Quantity:  0,
+		UpdatedAt: now,
+	})
+	if result.Error != nil {
+		err = result.Error
+		return
+	}
+
+	if result.RowsAffected != int64(len(cartItemIDs)) {
+		err = fmt.Errorf("expected %d cart items updated. but got %d", len(cartItemIDs), result.RowsAffected)
 		return
 	}
 

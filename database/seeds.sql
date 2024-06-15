@@ -1,7 +1,11 @@
-INSERT INTO payment_statuses (name, description) VALUES ('PENDING', 'Still waiting for payment from the user');
-INSERT INTO payment_statuses (name, description) VALUES ('PAID', 'Payment already paid by the user');
-INSERT INTO payment_statuses (name, description) VALUES ('EXPIRED', 'Payment is already expired');
-INSERT INTO payment_statuses (name, description) VALUES ('CANCELLED', 'Payment cancelled');
+INSERT INTO order_statuses (name, description) VALUES ('WAITINGPAYMENT', 'Still waiting for payment from the user');
+INSERT INTO order_statuses (name, description) VALUES ('PENDING', 'The order has been created but not yet processed');
+INSERT INTO order_statuses (name, description) VALUES ('PROCESSING', 'The order is being processed');
+INSERT INTO order_statuses (name, description) VALUES ('SHIPPED', 'The order has been shipped and is on its way to the customer');
+INSERT INTO order_statuses (name, description) VALUES ('DELIVERED', 'The order has been delivered to the customer');
+INSERT INTO order_statuses (name, description) VALUES ('CANCELLED', 'The order has been cancelled by the customer or the store');
+INSERT INTO order_statuses (name, description) VALUES ('REFUNDED', 'The payment for the order has been refunded to the customer');
+INSERT INTO order_statuses (name, description) VALUES ('FAILED', 'The payment for the order has failed');
 
 INSERT INTO product_categories (id, name, description) VALUES ('253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'ELEKTRONIK', 'Produk elektronik');
 INSERT INTO product_categories (id, name, description) VALUES ('f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'KENDARAAN', 'Produk kendaraan');
@@ -20,8 +24,6 @@ Insert Into products (name, category_id, description, price) Values ('Gorgeous C
 Insert Into products (name, category_id, description, price) Values ('Rustic Rubber Salad', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive', '731');
 Insert Into products (name, category_id, description, price) Values ('Intelligent Soft Cheese', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support', '490');
 Insert Into products (name, category_id, description, price) Values ('Oriental Rubber Chips', '899f3232-5ce7-401f-a8a8-979a4664e8c1', 'The Football Is Good For Training And Recreational Purposes', '769');
-
-
 Insert Into products (name, category_id, description, price) Values ('Handmade Concrete Keyboard', '253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive', '507');
 Insert Into products (name, category_id, description, price) Values ('Sleek Bronze Chair', 'b9ac37cc-25db-4467-acee-8997edd67d19', 'New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016', '663');
 Insert Into products (name, category_id, description, price) Values ('Fantastic Wooden Hat', '352451b1-7650-4c8f-9cb8-0c32df43ffaf', 'The Football Is Good For Training And Recreational Purposes', '337');

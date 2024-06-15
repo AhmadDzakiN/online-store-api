@@ -16,6 +16,8 @@ type CartItem struct {
 }
 
 type CartItemJoinProduct struct {
+	CartID          uint64    `gorm:"column:cart_id"`
+	CartItemID      uint64    `gorm:"column:cart_item_id"`
 	ProductID       string    `gorm:"column:product_id"`
 	ProductName     string    `gorm:"column:name"`
 	ProductPrice    uint64    `gorm:"column:price"`
