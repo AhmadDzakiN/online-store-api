@@ -31,7 +31,7 @@ func (h *CustomerHandler) Register(ctx echo.Context) (err error) {
 		return
 	}
 
-	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
+	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil, nil))
 }
 
 func (h *CustomerHandler) Login(ctx echo.Context) (err error) {
@@ -48,5 +48,5 @@ func (h *CustomerHandler) Login(ctx echo.Context) (err error) {
 		return
 	}
 
-	return ctx.JSON(http.StatusOK, builder.BuildSuccessResponse(resp))
+	return ctx.JSON(http.StatusOK, builder.BuildSuccessResponse(resp, nil))
 }

@@ -15,6 +15,14 @@ type CartItem struct {
 	UpdatedAt time.Time    `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;not null"`
 }
 
+type CartItemJoinProduct struct {
+	ProductID       string    `gorm:"column:product_id"`
+	ProductName     string    `gorm:"column:name"`
+	ProductPrice    uint64    `gorm:"column:price"`
+	ProductQuantity uint      `gorm:"column:quantity"`
+	UpdatedAt       time.Time `gorm:"column:updated_at"`
+}
+
 func (ci *CartItem) TableName() string {
 	return "cart_items"
 }

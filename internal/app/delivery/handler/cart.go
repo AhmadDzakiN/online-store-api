@@ -31,7 +31,7 @@ func (h *CartHandler) AddProduct(ctx echo.Context) (err error) {
 		return
 	}
 
-	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
+	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil, nil))
 }
 
 func (h *CartHandler) DeleteProduct(ctx echo.Context) (err error) {
@@ -41,5 +41,15 @@ func (h *CartHandler) DeleteProduct(ctx echo.Context) (err error) {
 		return
 	}
 
-	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil))
+	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil, nil))
+}
+
+func (h *CartHandler) View(ctx echo.Context) (err error) {
+	nextToken := ctx.QueryParam("next")
+	resp, nextPageToken, err := h.CartService.View(ctx, nextToken)
+	if err != nil {
+		return
+	}
+
+	return ctx.JSON(http.StatusOK, builder.BuildSuccessResponse(resp, &nextPageToken))
 }

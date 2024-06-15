@@ -12,7 +12,7 @@ type CartRepository struct {
 }
 
 type ICartRepository interface {
-	GetByCustomerID(ctx context.Context, customerID string) (cart model.Cart, err error)
+	GetActiveByCustomerID(ctx context.Context, customerID string) (cart model.Cart, err error)
 	Create(ctx context.Context, newCart *model.Cart, trx *gorm.DB) (err error)
 }
 
@@ -22,8 +22,8 @@ func NewCartRepository(db *gorm.DB) ICartRepository {
 	}
 }
 
-func (r *CartRepository) GetByCustomerID(ctx context.Context, customerID string) (cart model.Cart, err error) {
-	result := r.db.WithContext(ctx).First(&cart, "customer_id = ?", customerID)
+func (r *CartRepository) GetActiveByCustomerID(ctx context.Context, customerID string) (cart model.Cart, err error) {
+	result := r.db.WithContext(ctx).First(&cart, "customer_id = ? AND deleted_at IS NULL", customerID)
 	if result.Error != nil {
 		err = result.Error
 		return

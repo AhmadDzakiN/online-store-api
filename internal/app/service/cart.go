@@ -8,10 +8,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 	"net/http"
+	"online-store-api/internal/app/constants"
 	"online-store-api/internal/app/model"
 	"online-store-api/internal/app/payloads"
 	"online-store-api/internal/app/repository"
 	"online-store-api/internal/pkg/jwt"
+	"online-store-api/internal/pkg/pagination"
 	"time"
 )
 
@@ -26,6 +28,7 @@ type CartService struct {
 type ICartService interface {
 	AddProduct(ctx echo.Context, req payloads.AddProductRequest) (err error)
 	DeleteProduct(ctx echo.Context, productID string) (err error)
+	View(ctx echo.Context, pageToken string) (resp []payloads.ViewCartResponse, nextPageToken string, err error)
 }
 
 func NewCartService(validate *validator.Validate, db *gorm.DB, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository,
@@ -64,9 +67,9 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 	}
 
 	customerID := jwtClaims["customer_id"].(string)
-	cart, err := s.CartRepo.GetByCustomerID(ctx.Request().Context(), customerID)
+	cart, err := s.CartRepo.GetActiveByCustomerID(ctx.Request().Context(), customerID)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) { // If cart not found, then create a new one
-		log.Err(err).Msgf("Failed to get cart by customer id %s", customerID)
+		log.Err(err).Msgf("Failed to get active cart by customer id %s", customerID)
 		return
 	}
 
@@ -156,9 +159,9 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 	}
 
 	customerID := jwtClaims["customer_id"].(string)
-	cart, err := s.CartRepo.GetByCustomerID(ctx.Request().Context(), customerID)
+	cart, err := s.CartRepo.GetActiveByCustomerID(ctx.Request().Context(), customerID)
 	if err != nil {
-		log.Err(err).Msgf("Failed to get cart by customer id %s", customerID)
+		log.Err(err).Msgf("Failed to get active cart by customer id %s", customerID)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = echo.NewHTTPError(http.StatusNotFound, "cart is not found")
 		}
@@ -184,6 +187,48 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 		log.Err(err).Msgf("Failed to delete cart item for id %d", cartItem.ID)
 		return
 	}
+
+	return
+}
+
+func (s *CartService) View(ctx echo.Context, pageToken string) (resp []payloads.ViewCartResponse, nextPageToken string, err error) {
+	jwtClaims, err := jwt.GetTokenClaims(ctx)
+	if err != nil {
+		log.Err(err).Msg("Failed to get jwt token claims")
+		err = echo.NewHTTPError(http.StatusUnauthorized, "Failed to get jwt token claims")
+		return
+	}
+
+	customerID := jwtClaims["customer_id"].(string)
+	cart, err := s.CartRepo.GetActiveByCustomerID(ctx.Request().Context(), customerID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) { // Don't return error when user do not have any cart
+			log.Warn().Msgf("Customer does not have any cart yet")
+			err = nil
+			return
+		}
+		log.Err(err).Msgf("Failed to get active cart by customer id %s", customerID)
+		return
+	}
+
+	lastValue := pagination.ParsePageToken(pageToken)
+	items, err := s.CartItemRepo.GetActiveItemsAndProductsByCartID(ctx.Request().Context(), cart.ID, lastValue)
+	if err != nil {
+		log.Err(err).Msgf("Failed to get active cart items and products cart by cart id %d", cart.ID)
+		return
+	}
+
+	for _, item := range items {
+		resp = append(resp, payloads.ViewCartResponse{
+			ProductID:       item.ProductID,
+			ProductName:     item.ProductName,
+			ProductPrice:    item.ProductPrice,
+			ProductQuantity: item.ProductQuantity,
+			UpdatedAt:       item.UpdatedAt.Unix(),
+		})
+	}
+
+	nextPageToken = pagination.CreatePageToken(resp, constants.LimitDataPerPage)
 
 	return
 }
