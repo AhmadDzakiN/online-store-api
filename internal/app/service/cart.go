@@ -218,6 +218,7 @@ func (s *CartService) View(ctx echo.Context, pageToken string) (resp []payloads.
 		return
 	}
 
+	// No need to return error when user do not have any active cart items
 	for _, item := range items {
 		resp = append(resp, payloads.ViewCartResponse{
 			ProductID:       item.ProductID,

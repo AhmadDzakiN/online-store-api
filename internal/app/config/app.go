@@ -30,13 +30,16 @@ func BootstrapApp(config *BootstrapAppConfig) {
 
 	customerService := service.NewCustomerService(config.Validator, customerRepository)
 	cartService := service.NewCartService(config.Validator, config.DB, cartRepository, cartItemRepository, productRepository)
+	productService := service.NewProductService(config.Validator, productRepository)
 
 	cartHandler := handler.NewCartHandler(cartService)
 	customerHandler := handler.NewCustomerHandler(customerService)
+	productHandler := handler.NewProductHandler(productService)
 
 	routeCfg := router.RouteConfig{
 		CartHandler:     cartHandler,
 		CustomerHandler: customerHandler,
+		ProductHandler:  productHandler,
 		Config:          config.Config,
 	}
 

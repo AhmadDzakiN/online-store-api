@@ -12,8 +12,8 @@ import (
 type RouteConfig struct {
 	CustomerHandler *handler.CustomerHandler
 	CartHandler     *handler.CartHandler
-	//ProductHandler  handler.ProductHandler
-	Config *viper.Viper
+	ProductHandler  *handler.ProductHandler
+	Config          *viper.Viper
 }
 
 func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
@@ -45,5 +45,10 @@ func NewRouter(routeCfg RouteConfig, e *echo.Echo) {
 		cartGroup.POST("", routeCfg.CartHandler.AddProduct)
 		cartGroup.DELETE("/:product_id", routeCfg.CartHandler.DeleteProduct)
 		cartGroup.GET("", routeCfg.CartHandler.View)
+	}
+
+	productGroup := e.Group("/products")
+	{
+		productGroup.GET("/categories/:category_id", routeCfg.ProductHandler.ViewByCategoryID)
 	}
 }

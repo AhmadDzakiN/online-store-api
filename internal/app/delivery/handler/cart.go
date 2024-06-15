@@ -41,7 +41,7 @@ func (h *CartHandler) DeleteProduct(ctx echo.Context) (err error) {
 		return
 	}
 
-	return ctx.JSON(http.StatusCreated, builder.BuildSuccessResponse(nil, nil))
+	return ctx.JSON(http.StatusNoContent, builder.BuildSuccessResponse(nil, nil))
 }
 
 func (h *CartHandler) View(ctx echo.Context) (err error) {
