@@ -99,8 +99,7 @@ func (r *CartItemRepository) CountActiveByCartID(ctx context.Context, cartID uin
 
 func (r *CartItemRepository) GetActiveItemsAndProductsByCartID(ctx context.Context, cartID uint64, lastCreated int64) (data []model.CartItemJoinProduct, err error) {
 	query := r.db.WithContext(ctx).Select("c.cart_id, c.id as cart_item_id, c.product_id, p.name, p.price, c.quantity, c.updated_at").Table("cart_items c").
-		Joins("INNER JOIN products p ON c.product_id = p.id").Where("c.cart_id = ? AND c.deleted_at IS NULL AND c.quantity != 0", cartID).
-		Order("c.updated_at DESC")
+		Joins("INNER JOIN products p ON c.product_id = p.id").Where("c.cart_id = ? AND c.deleted_at IS NULL AND c.quantity != 0", cartID).Order("c.updated_at DESC")
 
 	if lastCreated > 0 {
 		query = query.Where("c.updated_at < ?", time.Unix(lastCreated, 0))
@@ -154,10 +153,10 @@ func (r *CartItemRepository) UpdateToDeleted(ctx context.Context, cartItemIDs []
 	}
 
 	now := time.Now()
-	result := db.Where("id in (?)", cartItemIDs).Updates(model.CartItem{
-		DeletedAt: sql.NullTime{Time: now, Valid: true},
-		Quantity:  0,
-		UpdatedAt: now,
+	result := db.Table("cart_items").Where("id in (?)", cartItemIDs).Updates(map[string]interface{}{
+		"deleted_at": sql.NullTime{Time: now, Valid: true},
+		"quantity":   0,
+		"updated_at": now,
 	})
 	if result.Error != nil {
 		err = result.Error

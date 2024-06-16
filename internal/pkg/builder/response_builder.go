@@ -1,5 +1,7 @@
 package builder
 
+import "reflect"
+
 type SuccessResponse struct {
 	Status string      `json:"status"`
 	Next   *string     `json:"next,omitempty"`
@@ -12,11 +14,24 @@ type ErrorResponse struct {
 }
 
 func BuildSuccessResponse(data interface{}, pageToken *string) SuccessResponse {
-	return SuccessResponse{
-		Status: "success",
-		Next:   pageToken,
-		Data:   data,
+	resp := SuccessResponse{}
+
+	if reflect.ValueOf(data).Kind() == reflect.Slice {
+		resp.Data = data
+	} else {
+		temp := []interface{}{}
+		if reflect.ValueOf(data).IsValid() {
+			temp = []interface{}{
+				data,
+			}
+		}
+		resp.Data = temp
 	}
+
+	resp.Status = "success"
+	resp.Next = pageToken
+
+	return resp
 }
 
 func BuildErrorResponse(err string) ErrorResponse {

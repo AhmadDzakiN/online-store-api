@@ -10,7 +10,7 @@ INSERT INTO order_statuses (name, description) VALUES ('FAILED', 'The payment fo
 INSERT INTO product_categories (id, name, description) VALUES ('253d0ba9-35b6-442a-86ed-5f7a02591a4f', 'ELEKTRONIK', 'Produk elektronik');
 INSERT INTO product_categories (id, name, description) VALUES ('f1bc395c-dc09-4f3f-90af-bf4e07a250f3', 'KENDARAAN', 'Produk kendaraan');
 INSERT INTO product_categories (id, name, description) VALUES ('899f3232-5ce7-401f-a8a8-979a4664e8c1', 'MAKANAN', 'Produk makanan');
-INSERT INTO product_categories (id, name, description) VALUES ('85c11f2a-7895-4773-8196-f60922c4024a', 'KENDARAAN', 'Produk kendaraan');
+INSERT INTO product_categories (id, name, description) VALUES ('85c11f2a-7895-4773-8196-f60922c4024a', 'KEBERSIHAN', 'Produk kebersihan');
 INSERT INTO product_categories (id, name, description) VALUES ('352451b1-7650-4c8f-9cb8-0c32df43ffaf', 'PAKAIAN', 'Produk pakaian');
 INSERT INTO product_categories (id, name, description) VALUES ('b9ac37cc-25db-4467-acee-8997edd67d19', 'PERALATAN RUMAH', 'Produk perlatan rumah');
 

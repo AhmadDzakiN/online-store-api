@@ -92,6 +92,7 @@ func (s *OrderService) Checkout(ctx echo.Context, req payloads.CheckoutRequest) 
 	err = s.ProductRepo.CheckExistingIDs(ctx.Request().Context(), productIDs)
 	if err != nil {
 		log.Err(err).Msgf("There are products that do not exist for customer id %s", customerID)
+		err = echo.NewHTTPError(http.StatusNotFound, "some products do not exists")
 		return
 	}
 
@@ -99,6 +100,7 @@ func (s *OrderService) Checkout(ctx echo.Context, req payloads.CheckoutRequest) 
 	err = s.CartItemRepo.CheckExistingIDs(ctx.Request().Context(), cartItemIDs, cart.ID)
 	if err != nil {
 		log.Err(err).Msgf("There are chart items that do not exist for customer id %s", customerID)
+		err = echo.NewHTTPError(http.StatusNotFound, "some cart items do not exists")
 		return
 	}
 

@@ -1,0 +1,50 @@
+services:
+  db:
+    container_name: postgres_db
+    image: postgres:14.10-alpine3.19
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: online-store-db
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      # Load database schema from database/definition.sql
+      # Initiate database seeds from database/seeds.sql
+      # If you want to reload new database schema, you need to execute
+      # `docker-compose down --volumes` first to remove the volume.
+      - ./database/definition.sql:/docker-entrypoint-initdb.d/definition.sql
+      - ./database/seeds.sql:/docker-entrypoint-initdb.d/seeds.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d online-store-db -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - network-test
+
+  app:
+    container_name: online_store_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    ports:
+      # if you want to change the port, change the .env file too
+      - "1323:1323"
+    networks:
+      - network-test
+
+volumes:
+  pg_data:
+
+networks:
+  network-test:
+    driver: bridge

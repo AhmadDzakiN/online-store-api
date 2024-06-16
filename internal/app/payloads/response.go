@@ -5,8 +5,8 @@ type LoginResponse struct {
 }
 
 type ViewCartResponse struct {
-	CartID uint64             `json:"cart_id"`
-	Items  []CartItemResponse `json:"items"`
+	CartID uint64             `json:"cart_id,omitempty"`
+	Items  []CartItemResponse `json:"items,omitempty"`
 }
 
 type CartItemResponse struct {
@@ -19,9 +19,9 @@ type CartItemResponse struct {
 }
 
 type ViewProductResponse struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	Price     uint64 `json:"price"`
+	ID        string `json:"id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Price     uint64 `json:"price,omitempty"`
 	UpdatedAt int64  `json:"-"` //For pagination
 }
 

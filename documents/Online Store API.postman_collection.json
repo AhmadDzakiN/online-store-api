@@ -1,0 +1,1168 @@
+{
+	"info": {
+		"_postman_id": "d30b75c1-81cf-4a49-a937-04e7e937f91c",
+		"name": "Online Store API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5740548"
+	},
+	"item": [
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Register Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\",\n    \"name\": \"user test\",\n    \"address\": \"kota depok\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:1323/customers/register",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"customers",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Register Customer",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\",\n    \"name\": \"user test\",\n    \"address\": \"kota depok\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/register",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": []\n}"
+						},
+						{
+							"name": "400 - Register Customer (Invalid or empty request body)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\",\n    \"name\": \"user test\"\n    // \"address\": \"kota depok\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/register",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"invalid or empty register body request\"\n}"
+						},
+						{
+							"name": "409 - Register Customer (User already exists)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\",\n    \"name\": \"user test\",\n    \"address\": \"kota depok\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/register",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"register"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"customer with email given is already exists\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:1323/customers/login",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"customers",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/login",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6ImE5MzAwYjFhLWNlMTgtNGU5ZS1iOTMwLTlmOTk4Y2I4ZjJlNyIsImV4cCI6MTcxOTEyNTA2NSwiaWF0IjoxNzE4NTIwMjY1LCJuYW1lIjoidXNlciB0ZXN0In0.VQHM3wYcSLq7s2wjUpz92-hG94XX4oxtkT_u77UB0G8\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "400 - Login (Invalid request body)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\"\n    // \"password\": \"test1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/login",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"invalid login request body\"\n}"
+						},
+						{
+							"name": "401 - Login (Password does not match)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/login",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"Password does not match\"\n}"
+						},
+						{
+							"name": "404 - Login (Customer not found)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"test@email.com\",\n    \"password\": \"test1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/customers/login",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"customers",
+										"login"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"customer is not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "View Product By Category ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:1323/products/categories/:category_id",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"products",
+								"categories",
+								":category_id"
+							],
+							"query": [
+								{
+									"key": "next",
+									"value": "last_1718517644",
+									"description": "next page token",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "category_id",
+									"value": "85c11f2a-7895-4773-8196-f60922c4024a",
+									"description": "category id"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - View Product By Category ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/products/categories/:category_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"products",
+										"categories",
+										":category_id"
+									],
+									"query": [
+										{
+											"key": "next",
+											"value": null,
+											"description": "next page token",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "category_id",
+											"value": "",
+											"description": "category id"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "200 - View Product By Category ID (Empty result)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/products/categories/:category_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"products",
+										"categories",
+										":category_id"
+									],
+									"query": [
+										{
+											"key": "next",
+											"value": null,
+											"description": "next page token",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "category_id",
+											"value": "",
+											"description": "category id"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"next\": \"\",\n    \"data\": [\n        {}\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add Product to Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"562a3a3e-98ee-4608-95cb-60f8cab44782\",\n    \"quantit\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:1323/carts",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Add Product to Cart",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product_id\": \"a12ac797-1858-45fc-b799-9b14dd18ef83\",\n    \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/carts",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": []\n}"
+						},
+						{
+							"name": "400 - Add Product to Cart (Invalid or empty request body)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product_id\": \"a12ac797-1858-45fc-b799-9b14dd18ef83\"\n    // \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/carts",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"invalid add product to cart request body\"\n}"
+						},
+						{
+							"name": "404 - Add Product to Cart (Product not found)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product_id\": \"a12ac797-1858-45fc-b799-9b14dd18ef83\",\n    \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/carts",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"product is not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Product from Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:1323/carts/:product_id",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"carts",
+								":product_id"
+							],
+							"variable": [
+								{
+									"key": "product_id",
+									"value": "3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "204 - Delete Product from Cart",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts/:product_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "a12ac797-1858-45fc-b799-9b14dd18ef83"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "404 - Delete Product from Cart (Product not found)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts/:product_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "a12ac797-1858-45fc-b799-9b14dd18ef83"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"product is not found\"\n}"
+						},
+						{
+							"name": "404 - Delete Product from Cart (Cart is not found)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts/:product_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "a12ac797-1858-45fc-b799-9b14dd18ef83"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"cart is not found\"\n}"
+						},
+						{
+							"name": "404 - Delete Product from Cart (Active cart item is not found)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts/:product_id",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "a12ac797-1858-45fc-b799-9b14dd18ef83"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"cart item is not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "View Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:1323/carts",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"carts"
+							],
+							"query": [
+								{
+									"key": "next",
+									"value": "last_1718471198",
+									"description": "next page token",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - View Cart",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts"
+									],
+									"query": [
+										{
+											"key": "next",
+											"value": "last_1718471186",
+											"description": "next page token",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"next\": \"last_1718471186\",\n    \"data\": [\n        {\n            \"cart_id\": 1,\n            \"items\": [\n                {\n                    \"cart_item_id\": 14,\n                    \"product_id\": \"a12ac797-1858-45fc-b799-9b14dd18ef83\",\n                    \"product_name\": \"Sleek Bronze Chair\",\n                    \"product_price\": 663,\n                    \"product_quantity\": 2\n                },\n                {\n                    \"cart_item_id\": 10,\n                    \"product_id\": \"b4989adf-8854-44f3-89a0-f2dd26efd386\",\n                    \"product_name\": \"Intelligent Soft Cheese\",\n                    \"product_price\": 490,\n                    \"product_quantity\": 2\n                },\n                {\n                    \"cart_item_id\": 9,\n                    \"product_id\": \"53c12f82-7200-472f-89a9-b2db21ad7dd3\",\n                    \"product_name\": \"Rustic Rubber Salad\",\n                    \"product_price\": 731,\n                    \"product_quantity\": 3\n                },\n                {\n                    \"cart_item_id\": 8,\n                    \"product_id\": \"c77629f6-5733-472b-a9cf-222542907624\",\n                    \"product_name\": \"Gorgeous Concrete Chicken\",\n                    \"product_price\": 8,\n                    \"product_quantity\": 4\n                },\n                {\n                    \"cart_item_id\": 7,\n                    \"product_id\": \"96ab48eb-d6c2-48bf-b1c8-fa3ed0dae17c\",\n                    \"product_name\": \"Oriental Bronze Towels\",\n                    \"product_price\": 320,\n                    \"product_quantity\": 5\n                },\n                {\n                    \"cart_item_id\": 6,\n                    \"product_id\": \"d3520634-709a-481e-8e7f-6a311fead6d5\",\n                    \"product_name\": \"Handmade Wooden Chips\",\n                    \"product_price\": 529,\n                    \"product_quantity\": 5\n                },\n                {\n                    \"cart_item_id\": 5,\n                    \"product_id\": \"0a5cc321-5a6f-4de0-bf71-c3fb111fd11f\",\n                    \"product_name\": \"Sleek Soft Motor\",\n                    \"product_price\": 965,\n                    \"product_quantity\": 4\n                },\n                {\n                    \"cart_item_id\": 4,\n                    \"product_id\": \"9c95c92a-0a07-4c9f-9bc9-ee23a367c654\",\n                    \"product_name\": \"Small Granite Salad\",\n                    \"product_price\": 191,\n                    \"product_quantity\": 3\n                },\n                {\n                    \"cart_item_id\": 3,\n                    \"product_id\": \"b027a5aa-6e22-47a5-b130-3835618d5942\",\n                    \"product_name\": \"Unbranded Bronze Tuna\",\n                    \"product_price\": 347,\n                    \"product_quantity\": 2\n                },\n                {\n                    \"cart_item_id\": 2,\n                    \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n                    \"product_name\": \"Ergonomic Cotton Chair\",\n                    \"product_price\": 274,\n                    \"product_quantity\": 1\n                }\n            ]\n        }\n    ]\n}"
+						},
+						{
+							"name": "200 - View Cart (Empty result)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:1323/carts",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"carts"
+									],
+									"query": [
+										{
+											"key": "next",
+											"value": "last_1718424934",
+											"description": "next page token",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"next\": \"\",\n    \"data\": [\n        {}\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Checkout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cart_id\": 1,\n    \"items\": [\n        {\n            \"cart_item_id\": 2,\n            \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n            \"price\": 274,\n            \"quantity\":1\n        },\n        {\n            \"cart_item_id\": 3,\n            \"product_id\": \"b027a5aa-6e22-47a5-b130-3835618d5942\",\n            \"price\": 347,\n            \"quantity\":2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:1323/orders",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "404 - Checkout (Some cart items do not exists)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cart_id\": 1,\n    \"items\": [\n        {\n            \"cart_item_id\": 1,\n            \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n            \"price\": 769,\n            \"quantity\":1\n        },\n        {\n            \"cart_item_id\": 12,\n            \"product_id\": \"b8151799-2dcf-46d6-a837-9c83d11eb99f\",\n            \"price\": 507,\n            \"quantity\":2\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/orders",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"some cart items do not exists\"\n}"
+						},
+						{
+							"name": "404 - Checkout (Some products do not exists)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cart_id\": 1,\n    \"items\": [\n        {\n            \"cart_item_id\": 1,\n            \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n            \"price\": 769,\n            \"quantity\":1\n        },\n        {\n            \"cart_item_id\": 12,\n            \"product_id\": \"b8151799-2dcf-46d6-a837-9c83d11eb99f\",\n            \"price\": 507,\n            \"quantity\":2\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/orders",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"some products do not exists\"\n}"
+						},
+						{
+							"name": "201 - Checkout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cart_id\": 1,\n    \"items\": [\n        {\n            \"cart_item_id\": 1,\n            \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n            \"price\": 769,\n            \"quantity\":1\n        },\n        {\n            \"cart_item_id\": 12,\n            \"product_id\": \"b8151799-2dcf-46d6-a837-9c83d11eb99f\",\n            \"price\": 507,\n            \"quantity\":2\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/orders",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"order_id\": \"8160ef71-8c2f-4e17-90f9-79fd5d9e1e87\",\n            \"status\": \"PENDING\",\n            \"total_amount\": 968\n        }\n    ]\n}"
+						},
+						{
+							"name": "404 - Checkout (Customer cart is not found)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cart_id\": 1,\n    \"items\": [\n        {\n            \"cart_item_id\": 1,\n            \"product_id\": \"3b215da4-ddb3-4cf5-af8e-2fbddc8b4dbe\",\n            \"price\": 769,\n            \"quantity\":1\n        },\n        {\n            \"cart_item_id\": 12,\n            \"product_id\": \"b8151799-2dcf-46d6-a837-9c83d11eb99f\",\n            \"price\": 507,\n            \"quantity\":2\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:1323/orders",
+									"host": [
+										"localhost"
+									],
+									"port": "1323",
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"error\": \"customer cart is not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:1323/",
+					"host": [
+						"localhost"
+					],
+					"port": "1323",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200 - Health Check",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:1323/",
+							"host": [
+								"localhost"
+							],
+							"port": "1323",
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "\"OK!\""
+				}
+			]
+		}
+	]
+}

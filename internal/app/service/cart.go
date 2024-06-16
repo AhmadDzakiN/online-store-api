@@ -81,7 +81,7 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 			return
 		}
 
-		// There is already the same product in the cart
+		// There is already the same product in the cart item
 		if cartItem.ID > 0 {
 			cartItem.Quantity += req.Quantity
 			cartItem.UpdatedAt = time.Now()
@@ -165,6 +165,7 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 		log.Err(err).Msgf("Failed to get active cart by customer id %s", customerID)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = echo.NewHTTPError(http.StatusNotFound, "cart is not found")
+			return
 		}
 		return
 	}
@@ -174,6 +175,7 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 		log.Err(err).Msgf("Failed to get cart item by cart id %d", cart.ID)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = echo.NewHTTPError(http.StatusNotFound, "cart item is not found")
+			return
 		}
 		return
 	}
@@ -220,6 +222,10 @@ func (s *CartService) View(ctx echo.Context, pageToken string) (resp payloads.Vi
 	}
 
 	// No need to return error when user do not have any active cart items
+	if len(items) < 1 {
+		return
+	}
+
 	var cartItemListResp []payloads.CartItemResponse
 	for _, item := range items {
 		cartItemListResp = append(cartItemListResp, payloads.CartItemResponse{

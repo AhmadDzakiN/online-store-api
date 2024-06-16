@@ -27,7 +27,7 @@ func BootstrapApp(config *BootstrapAppConfig) {
 	productRepository := repository.NewProductRepository(config.DB)
 
 	cartService := service.NewCartService(config.Validator, config.DB, cartRepository, cartItemRepository, productRepository)
-	customerService := service.NewCustomerService(config.Validator, customerRepository)
+	customerService := service.NewCustomerService(config.Validator, config.Config, customerRepository, cartRepository)
 	orderService := service.NewOrderService(config.Validator, config.DB, orderRepository, orderItemRepository, productRepository, cartRepository, cartItemRepository)
 	productService := service.NewProductService(config.Validator, productRepository)
 

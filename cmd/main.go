@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"net/http"
 	"online-store-api/internal/app/config"
 	"os"
@@ -32,15 +34,17 @@ func main() {
 		Echo:      e,
 	})
 	config.SetCustomErrorHandler(e)
-	startServer(e)
+	startServer(e, cfg)
 }
 
-func startServer(e *echo.Echo) {
+func startServer(e *echo.Echo, cfg *viper.Viper) {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 	// Start server
 	go func() {
-		if err := e.Start(":1323"); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		appPort := fmt.Sprintf(":%s", cfg.GetString("APP_PORT"))
+		log.Info().Msgf("Starting %s server on port %s", cfg.GetString("APP_NAME"), appPort)
+		if err := e.Start(appPort); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatal().Msg("shutting down the server")
 		}
 	}()

@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
 	"online-store-api/internal/app/model"
@@ -16,7 +17,9 @@ import (
 
 type CustomerService struct {
 	Validate     *validator.Validate
+	Config       *viper.Viper
 	CustomerRepo repository.ICustomerRepository
+	CartRepo     repository.ICartRepository
 }
 
 type ICustomerService interface {
@@ -24,10 +27,13 @@ type ICustomerService interface {
 	Login(ctx echo.Context, req payloads.LoginRequest) (resp payloads.LoginResponse, err error)
 }
 
-func NewCustomerService(validate *validator.Validate, customerRepo repository.ICustomerRepository) ICustomerService {
+func NewCustomerService(validate *validator.Validate, config *viper.Viper, customerRepo repository.ICustomerRepository,
+	cartRepo repository.ICartRepository) ICustomerService {
 	return &CustomerService{
 		Validate:     validate,
+		Config:       config,
 		CustomerRepo: customerRepo,
+		CartRepo:     cartRepo,
 	}
 }
 
@@ -72,6 +78,15 @@ func (s *CustomerService) Register(ctx echo.Context, req payloads.RegisterReques
 		return
 	}
 
+	// Create a new cart asynchronously, so it can speed up add product to cart for the first time for user
+	go func() {
+		err = s.CartRepo.Create(ctx.Request().Context(), &model.Cart{CustomerID: newCustomer.ID}, nil)
+		if err != nil {
+			log.Err(err).Msgf("Failed to create a cart for customer %s in register flow", newCustomer.ID)
+			return
+		}
+	}()
+
 	return
 }
 
@@ -99,7 +114,7 @@ func (s *CustomerService) Login(ctx echo.Context, req payloads.LoginRequest) (re
 		return
 	}
 
-	jwtToken, err := jwt.CreateToken(customer.ID, customer.Name)
+	jwtToken, err := jwt.CreateToken(customer.ID, customer.Name, s.Config)
 	if err != nil {
 		log.Err(err).Msgf("Failed to create token for customer %s", req.Email)
 		return
