@@ -1,0 +1,90 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table product_categories {
+  id uuid [primary key]
+  name varchar(100) [not null]
+  description varchar(255) [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id uuid [primary key]
+  name varchar(100) [not null]
+  category_id uuid [not null]
+  description text [not null]
+  price bigint [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table customers {
+  id uuid [primary key]
+  email varchar(100) [not null, unique]
+  password varchar(255) [not null]
+  name varchar(100) [not null]
+  address varchar (255) [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table carts {
+  id "bigserial" [primary key, increment]
+  customer_id uuid [not null]
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table cart_items {
+  id "bigserial" [primary key, increment]
+  cart_id bigint [not null]
+  product_id uuid [not null]
+  quantity int [not null]
+  deleted_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_statuses {
+  id "serial" [primary key, increment]
+  name varchar(100) [not null]
+  description varchar(255) [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table orders {
+  id uuid [primary key]
+  customer_id uuid [not null]
+  total_amount bigint [not null]
+  status_id int [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_items {
+  id "bigserial" [primary key, increment]
+  order_id uuid [not null]
+  product_id uuid [not null]
+  quantity int [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Ref: products.category_id < product_categories.id
+
+Ref: customers.id > carts.customer_id
+
+Ref: cart_items.cart_id > carts.id
+
+Ref: cart_items.product_id > products.id
+
+Ref: orders.status_id > order_statuses.id
+
+Ref: orders.customer_id > customers.id
+
+Ref: order_items.order_id > orders.id
+
+Ref: order_items.product_id > products.id

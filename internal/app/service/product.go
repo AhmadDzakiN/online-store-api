@@ -35,7 +35,6 @@ func (s *ProductService) ViewByCategoryID(ctx echo.Context, categoryID, pageToke
 	}
 
 	// No need to return error when the product list size is 0
-	// No need to return error when user do not have any active cart items
 	if len(products) < 1 {
 		return
 	}
