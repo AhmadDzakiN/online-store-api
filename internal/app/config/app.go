@@ -33,7 +33,7 @@ func BootstrapApp(config *BootstrapAppConfig) {
 
 	cartService := service.NewCartService(config.Validator, config.DB, cache, config.Config, cartRepository, cartItemRepository, productRepository)
 	customerService := service.NewCustomerService(config.Validator, config.Config, customerRepository, cartRepository)
-	orderService := service.NewOrderService(config.Validator, config.DB, orderRepository, orderItemRepository, productRepository, cartRepository, cartItemRepository)
+	orderService := service.NewOrderService(config.Validator, config.DB, cache, config.Config, orderRepository, orderItemRepository, productRepository, cartRepository, cartItemRepository)
 	productService := service.NewProductService(config.Validator, config.Config, productRepository, cache)
 
 	cartHandler := handler.NewCartHandler(cartService)

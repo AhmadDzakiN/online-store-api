@@ -26,7 +26,12 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to start, error connect to DB Postgre")
 		return
 	}
-	redisClient := config.NewRedisClient(cfg)
+
+	redisClient, err := config.NewRedisClient(cfg)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to start, error connect to Redis")
+		return
+	}
 
 	config.BootstrapApp(&config.BootstrapAppConfig{
 		DB:        db,

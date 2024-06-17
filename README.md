@@ -4,12 +4,14 @@ Online Store API by Ahmad Dzaki Naufal.
 ## Tech Stack
 - Go v1.22.
 - PostgreSQL 14.10.
+- Redis
 - Docker (Because we need to upload this Go app docker image to docker hub).
 
 ## How to Start
+These steps will show you only to start the app with its dependencies with Docker
 - Clone this repo.
 - Copy file `params/.env.sample` to `params/.env`.
-- Modify `params/.env` as your needs (current all config values in .env file are the default values for docker compose config & env, so you can build up this project docker containers without needs to change the existing .env values).
+- Modify `params/.env` as your needs (current all config values in .env.sample file are the default values for docker compose config & env, so you can build up this project docker containers without needs to change the existing .env values).
 - Run `docker-compose up --build -d`. It will build up all of these project's dependencies (Go App & PostgreSQL db).
 - Wait a few minutes until all the docker containers are up. The app and database will run on 1323 and 5432 ports for the default.
 - There are [definition.sql](database/definition.sql) and [seeds.sql](database/seeds.sql) to help you build and seed the database. By default, these files will be executed in `docker-compose up` command
@@ -21,12 +23,15 @@ This project uses Clean Architecture Concept (modified) and [Echo Go Framework](
 - Term of user is just customer, so we do not have any seller users because I assumed this store is owned only by one person/group.
 - All the product prices must be in integer not float.
 - Payment flow is outside the scope. So after user checkout, the payment can be assumed as `paid` and the order will be immediately made and in `PENDING` status.
+- A customer can checkout some items in their cart (partial checkout) or do a full checkout.
+- A customer can only checkout products with the quantity the same as in his/her cart & cart items.
 - A customer can own only one address.
 - A customer can own only one active cart (not cart item).
 - A valid password have a minimum 6 characters.
 - Delete product endpoint is just only to delete a product/cart item in the cart. So it will not empty the cart.
 - Get products by category is the user has seen the product category list page and when selected, the frontend will only send the category ID.
 - In the registration process, there is a process for creating a cart for the first time for the user which is carried out asynchronously. if it fails, it can be handled at the add product endpoint.
+- View products and view user cart & cart items use updated_at DESC sort/order.
 
 ## API Information
 1. Health Check: GET / (will return string “OK!”)
@@ -89,10 +94,13 @@ I use [dbdiagram.io](dbdiagram.io) to build this project ERD. You can find the s
 ├── go.sum
 ├── internal
 │   ├── app
+│   │   ├── cache
+│   │   │   └── cache.go
 │   │   ├── config
 │   │   │   ├── app.go
 │   │   │   ├── gorm.go
 │   │   │   ├── log.go
+│   │   │   ├── redis.go
 │   │   │   ├── response.go
 │   │   │   ├── validator.go
 │   │   │   └── viper.go

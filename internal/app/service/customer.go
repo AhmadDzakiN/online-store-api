@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -79,13 +80,13 @@ func (s *CustomerService) Register(ctx echo.Context, req payloads.RegisterReques
 	}
 
 	// Create a new cart asynchronously, so it can speed up add product to cart for the first time for user
-	go func() {
-		err = s.CartRepo.Create(ctx.Request().Context(), &model.Cart{CustomerID: newCustomer.ID}, nil)
+	go func(ctx context.Context, customer model.Customer) {
+		err = s.CartRepo.Create(context.Background(), &model.Cart{CustomerID: customer.ID}, nil)
 		if err != nil {
-			log.Err(err).Msgf("Failed to create a cart for customer %s in register flow", newCustomer.ID)
+			log.Err(err).Msgf("Failed to create a cart for customer %s in register flow", customer.ID)
 			return
 		}
-	}()
+	}(ctx.Request().Context(), newCustomer)
 
 	return
 }

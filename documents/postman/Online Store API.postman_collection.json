@@ -371,7 +371,7 @@
 							"query": [
 								{
 									"key": "next",
-									"value": "last_1718517644",
+									"value": "last_1718469861",
 									"description": "next page token",
 									"disabled": true
 								}
@@ -379,7 +379,7 @@
 							"variable": [
 								{
 									"key": "category_id",
-									"value": "85c11f2a-7895-4773-8196-f60922c4024a",
+									"value": "899f3232-5ce7-401f-a8a8-979a4664e8c1",
 									"description": "category id"
 								}
 							]
@@ -405,7 +405,7 @@
 									"query": [
 										{
 											"key": "next",
-											"value": null,
+											"value": "last_1718469861",
 											"description": "next page token",
 											"disabled": true
 										}
@@ -413,16 +413,24 @@
 									"variable": [
 										{
 											"key": "category_id",
-											"value": "",
+											"value": "899f3232-5ce7-401f-a8a8-979a4664e8c1",
 											"description": "category id"
 										}
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
 							"cookie": [],
-							"body": null
+							"body": "{\n    \"status\": \"success\",\n    \"next\": \"last_1718469861\",\n    \"data\": [\n        {\n            \"id\": \"9acdfdec-dadb-40e6-858d-e58c4bbe9600\",\n            \"name\": \"Small Rubber Tuna\",\n            \"price\": 501,\n            \"updated_at\": 1718470402\n        },\n        {\n            \"id\": \"9802f935-6fcf-45b0-8335-3f97eea07c36\",\n            \"name\": \"Fantastic Metal Salad\",\n            \"price\": 1000,\n            \"updated_at\": 1718470342\n        },\n        {\n            \"id\": \"e889da9f-90f5-42e5-a61a-0aa7939e77e4\",\n            \"name\": \"Recycled Bronze Cheese\",\n            \"price\": 243,\n            \"updated_at\": 1718470282\n        },\n        {\n            \"id\": \"287b05a1-1f47-41e3-bb22-83af0dfc487f\",\n            \"name\": \"Fantastic Bronze Chips\",\n            \"price\": 398,\n            \"updated_at\": 1718470222\n        },\n        {\n            \"id\": \"375a6ac5-5743-42fd-9cad-61f7b6feab47\",\n            \"name\": \"Licensed Frozen Cheese\",\n            \"price\": 939,\n            \"updated_at\": 1718470162\n        },\n        {\n            \"id\": \"562a3a3e-98ee-4608-95cb-60f8cab44780\",\n            \"name\": \"Incredible Metal Chicken\",\n            \"price\": 934,\n            \"updated_at\": 1718470102\n        },\n        {\n            \"id\": \"4fbad2da-1a04-4e61-ae8f-5cce87603f6d\",\n            \"name\": \"Recycled Granite Sausages\",\n            \"price\": 58,\n            \"updated_at\": 1718470042\n        },\n        {\n            \"id\": \"b27619b5-74f5-446b-a85f-0d88f1b631b1\",\n            \"name\": \"Oriental Rubber Chips\",\n            \"price\": 769,\n            \"updated_at\": 1718469982\n        },\n        {\n            \"id\": \"b4989adf-8854-44f3-89a0-f2dd26efd386\",\n            \"name\": \"Intelligent Soft Cheese\",\n            \"price\": 490,\n            \"updated_at\": 1718469921\n        },\n        {\n            \"id\": \"53c12f82-7200-472f-89a9-b2db21ad7dd3\",\n            \"name\": \"Rustic Rubber Salad\",\n            \"price\": 731,\n            \"updated_at\": 1718469861\n        }\n    ]\n}"
 						},
 						{
 							"name": "200 - View Product By Category ID (Empty result)",
@@ -443,7 +451,7 @@
 									"query": [
 										{
 											"key": "next",
-											"value": null,
+											"value": "last_1718469861",
 											"description": "next page token",
 											"disabled": true
 										}
@@ -495,7 +503,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"product_id\": \"562a3a3e-98ee-4608-95cb-60f8cab44782\",\n    \"quantit\": 4\n}",
+							"raw": "{\n    \"product_id\": \"562a3a3e-98ee-4608-95cb-60f8cab44782\",\n    \"quantity\": 4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
