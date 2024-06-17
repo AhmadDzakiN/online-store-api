@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func NewViperConfig() *viper.Viper {
+func NewViperConfig() (v *viper.Viper) {
 	dirPath, err := os.Getwd()
 	if err != nil {
 		panic(fmt.Errorf("error get working dir: %s", err))
@@ -18,7 +18,7 @@ func NewViperConfig() *viper.Viper {
 	godotenv.Load(fmt.Sprintf("%s/params/.env", dirPaths[0]))
 	godotenv.Load("./params/.env")
 
-	v := viper.New()
+	v = viper.New()
 	v.AddConfigPath(".")
 	v.AddConfigPath("../../../../params")
 	v.AddConfigPath("./params")
@@ -35,5 +35,5 @@ func NewViperConfig() *viper.Viper {
 		panic(fmt.Errorf("Config error: %s", err.Error()))
 	}
 
-	return v
+	return
 }

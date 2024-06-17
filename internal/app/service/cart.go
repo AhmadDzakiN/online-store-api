@@ -3,11 +3,14 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
+	"online-store-api/internal/app/cache"
 	"online-store-api/internal/app/constants"
 	"online-store-api/internal/app/model"
 	"online-store-api/internal/app/payloads"
@@ -20,6 +23,8 @@ import (
 type CartService struct {
 	Validate     *validator.Validate
 	DB           *gorm.DB
+	Cache        cache.ICache
+	Config       *viper.Viper
 	CartRepo     repository.ICartRepository
 	CartItemRepo repository.ICartItemRepository
 	ProductRepo  repository.IProductRepository
@@ -31,11 +36,13 @@ type ICartService interface {
 	View(ctx echo.Context, pageToken string) (resp payloads.ViewCartResponse, nextPageToken string, err error)
 }
 
-func NewCartService(validate *validator.Validate, db *gorm.DB, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository,
+func NewCartService(validate *validator.Validate, db *gorm.DB, cache cache.ICache, config *viper.Viper, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository,
 	productRepo repository.IProductRepository) ICartService {
 	return &CartService{
 		Validate:     validate,
 		DB:           db,
+		Cache:        cache,
+		Config:       config,
 		CartRepo:     cartRepo,
 		CartItemRepo: cartItemRepo,
 		ProductRepo:  productRepo,
@@ -103,6 +110,15 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 				return
 			}
 		}
+
+		// Invalidate cart cache for this user. Will generate new cart cache in view cart endpoint/logic
+		cartCacheKeyPattern := fmt.Sprintf("%s:*", s.Config.GetString("CACHE_ITEM_KEY_VIEW_CART_BY_CUSTOMER_ID"))
+		err = s.Cache.DeleteByKeyPattern(ctx.Request().Context(), cartCacheKeyPattern)
+		if err != nil {
+			log.Warn().Err(err).Msgf("Failed to invalidate/delete cart cache by customer id %s", customerID)
+			return
+		}
+
 		return
 	}
 
@@ -137,6 +153,8 @@ func (s *CartService) AddProduct(ctx echo.Context, req payloads.AddProductReques
 		log.Err(err).Msg("Failed to commit transaction for add product flow")
 		return
 	}
+
+	// I think no need to write a new cart cache for a new user who has just created its cart
 
 	return
 }
@@ -191,6 +209,14 @@ func (s *CartService) DeleteProduct(ctx echo.Context, productID string) (err err
 		return
 	}
 
+	// Invalidate cart cache for this user. Will generate new cart cache in view cart endpoint/logic
+	cartCacheKeyPattern := fmt.Sprintf("%s:*", s.Config.GetString("CACHE_ITEM_KEY_VIEW_CART_BY_CUSTOMER_ID"))
+	err = s.Cache.DeleteByKeyPattern(ctx.Request().Context(), cartCacheKeyPattern)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Failed to invalidate/delete cart cache by customer id %s", customerID)
+		return
+	}
+
 	return
 }
 
@@ -202,46 +228,61 @@ func (s *CartService) View(ctx echo.Context, pageToken string) (resp payloads.Vi
 		return
 	}
 
+	var cartItemListResp []payloads.CartItemResponse
 	customerID := jwtClaims["customer_id"].(string)
-	cart, err := s.CartRepo.GetActiveByCustomerID(ctx.Request().Context(), customerID)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) { // Don't return error when user do not have any cart
-			log.Warn().Msgf("Customer does not have any cart yet")
-			err = nil
+	lastValue := pagination.ParsePageToken(pageToken)
+	cacheKey := s.Config.GetString("CACHE_ITEM_KEY_VIEW_CART_BY_CUSTOMER_ID")
+	err = s.Cache.Get(ctx.Request().Context(), fmt.Sprintf("%s:%s:last_value:%d", cacheKey, customerID, lastValue), &resp)
+	if err != nil { // Failed to get cache in redis, so no need to return error and get from database instead
+		log.Warn().Err(err).Msgf("Failed to get view carts by customer id %s", customerID)
+		err = nil
+
+		cart, errGetCart := s.CartRepo.GetActiveByCustomerID(ctx.Request().Context(), customerID)
+		if errGetCart != nil {
+			if errors.Is(errGetCart, gorm.ErrRecordNotFound) { // Don't return error when user do not have any cart
+				log.Warn().Msgf("Customer does not have any cart yet")
+				err = nil
+				return
+			}
+			log.Err(errGetCart).Msgf("Failed to get active cart by customer id %s", customerID)
+			err = errGetCart
 			return
 		}
-		log.Err(err).Msgf("Failed to get active cart by customer id %s", customerID)
-		return
-	}
 
-	lastValue := pagination.ParsePageToken(pageToken)
-	items, err := s.CartItemRepo.GetActiveItemsAndProductsByCartID(ctx.Request().Context(), cart.ID, lastValue)
-	if err != nil {
-		log.Err(err).Msgf("Failed to get active cart items and products cart by cart id %d", cart.ID)
-		return
-	}
+		items, errGetCartItem := s.CartItemRepo.GetActiveItemsAndProductsByCartID(ctx.Request().Context(), cart.ID, lastValue)
+		if errGetCartItem != nil {
+			log.Err(errGetCartItem).Msgf("Failed to get active cart items and products cart by cart id %d", cart.ID)
+			err = errGetCartItem
+			return
+		}
 
-	// No need to return error when user do not have any active cart items
-	if len(items) < 1 {
-		return
-	}
+		// No need to return error when user do not have any active cart items
+		if len(items) < 1 {
+			return
+		}
 
-	var cartItemListResp []payloads.CartItemResponse
-	for _, item := range items {
-		cartItemListResp = append(cartItemListResp, payloads.CartItemResponse{
-			CartItemID:      item.CartItemID,
-			ProductID:       item.ProductID,
-			ProductName:     item.ProductName,
-			ProductPrice:    item.ProductPrice,
-			ProductQuantity: item.ProductQuantity,
-			UpdatedAt:       item.UpdatedAt.Unix(),
-		})
+		for _, item := range items {
+			cartItemListResp = append(cartItemListResp, payloads.CartItemResponse{
+				CartItemID:      item.CartItemID,
+				ProductID:       item.ProductID,
+				ProductName:     item.ProductName,
+				ProductPrice:    item.ProductPrice,
+				ProductQuantity: item.ProductQuantity,
+				UpdatedAt:       item.UpdatedAt.Unix(),
+			})
+		}
+
+		resp.CartID = items[0].CartID
+		resp.Items = cartItemListResp
 	}
 
 	nextPageToken = pagination.CreatePageToken(cartItemListResp, constants.LimitDataPerPage)
-
-	resp.CartID = items[0].CartID
-	resp.Items = cartItemListResp
+	cacheTTL := s.Config.GetDuration("CACHE_ITEM_TTL_VIEW_CART_BY_CUSTOMER_ID")
+	err = s.Cache.Write(ctx.Request().Context(), fmt.Sprintf("%s:%s:last_value:%d", cacheKey, customerID, lastValue), resp, cacheTTL)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Failed to write view cart by customer id cache for customer %s", customerID)
+		return
+	}
 
 	return
 }

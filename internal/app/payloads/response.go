@@ -15,14 +15,14 @@ type CartItemResponse struct {
 	ProductName     string `json:"product_name"`
 	ProductPrice    uint64 `json:"product_price"`
 	ProductQuantity uint   `json:"product_quantity"`
-	UpdatedAt       int64  `json:"-"` //For pagination
+	UpdatedAt       int64  `json:"updated_at"`
 }
 
 type ViewProductResponse struct {
 	ID        string `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Price     uint64 `json:"price,omitempty"`
-	UpdatedAt int64  `json:"-"` //For pagination
+	UpdatedAt int64  `json:"updated_at,omitempty"`
 }
 
 type CheckoutResponse struct {

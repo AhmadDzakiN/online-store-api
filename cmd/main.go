@@ -26,12 +26,14 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to start, error connect to DB Postgre")
 		return
 	}
+	redisClient := config.NewRedisClient(cfg)
 
 	config.BootstrapApp(&config.BootstrapAppConfig{
 		DB:        db,
 		Validator: validator,
 		Config:    cfg,
 		Echo:      e,
+		Cache:     redisClient,
 	})
 	config.SetCustomErrorHandler(e)
 	startServer(e, cfg)

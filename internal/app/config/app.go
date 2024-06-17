@@ -3,8 +3,10 @@ package config
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"online-store-api/internal/app/cache"
 	"online-store-api/internal/app/delivery/handler"
 	"online-store-api/internal/app/delivery/router"
 	"online-store-api/internal/app/repository"
@@ -16,9 +18,12 @@ type BootstrapAppConfig struct {
 	Validator *validator.Validate
 	Config    *viper.Viper
 	Echo      *echo.Echo
+	Cache     *redis.Client
 }
 
 func BootstrapApp(config *BootstrapAppConfig) {
+	cache := cache.NewCache(config.Cache)
+
 	cartRepository := repository.NewCartRepository(config.DB)
 	cartItemRepository := repository.NewCartItemRepository(config.DB)
 	customerRepository := repository.NewCustomerRepository(config.DB)
@@ -26,10 +31,10 @@ func BootstrapApp(config *BootstrapAppConfig) {
 	orderItemRepository := repository.NewOrderItemRepository(config.DB)
 	productRepository := repository.NewProductRepository(config.DB)
 
-	cartService := service.NewCartService(config.Validator, config.DB, cartRepository, cartItemRepository, productRepository)
+	cartService := service.NewCartService(config.Validator, config.DB, cache, config.Config, cartRepository, cartItemRepository, productRepository)
 	customerService := service.NewCustomerService(config.Validator, config.Config, customerRepository, cartRepository)
 	orderService := service.NewOrderService(config.Validator, config.DB, orderRepository, orderItemRepository, productRepository, cartRepository, cartItemRepository)
-	productService := service.NewProductService(config.Validator, productRepository)
+	productService := service.NewProductService(config.Validator, config.Config, productRepository, cache)
 
 	cartHandler := handler.NewCartHandler(cartService)
 	customerHandler := handler.NewCustomerHandler(customerService)

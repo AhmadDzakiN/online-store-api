@@ -2,11 +2,14 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
+	"online-store-api/internal/app/cache"
 	"online-store-api/internal/app/constants"
 	"online-store-api/internal/app/model"
 	"online-store-api/internal/app/payloads"
@@ -18,6 +21,8 @@ import (
 type OrderService struct {
 	Validate      *validator.Validate
 	DB            *gorm.DB
+	Cache         cache.ICache
+	Config        *viper.Viper
 	OrderRepo     repository.IOrderRepository
 	OrderItemRepo repository.IOrderItemRepository
 	ProductRepo   repository.IProductRepository
@@ -29,11 +34,13 @@ type IOrderService interface {
 	Checkout(ctx echo.Context, req payloads.CheckoutRequest) (resp payloads.CheckoutResponse, err error)
 }
 
-func NewOrderService(validate *validator.Validate, db *gorm.DB, orderRepo repository.IOrderRepository, orderItemRepo repository.IOrderItemRepository,
+func NewOrderService(validate *validator.Validate, db *gorm.DB, cache cache.ICache, config *viper.Viper, orderRepo repository.IOrderRepository, orderItemRepo repository.IOrderItemRepository,
 	productRepo repository.IProductRepository, cartRepo repository.ICartRepository, cartItemRepo repository.ICartItemRepository) IOrderService {
 	return &OrderService{
 		Validate:      validate,
 		DB:            db,
+		Cache:         cache,
+		Config:        config,
 		OrderRepo:     orderRepo,
 		OrderItemRepo: orderItemRepo,
 		ProductRepo:   productRepo,
@@ -137,6 +144,14 @@ func (s *OrderService) Checkout(ctx echo.Context, req payloads.CheckoutRequest) 
 	err = s.CartItemRepo.UpdateToDeleted(ctx.Request().Context(), cartItemIDs, trx)
 	if err != nil {
 		log.Err(err).Msgf("Failed to update cart items to be deleted for customer id %s", customerID)
+		return
+	}
+
+	// Invalidate cart cache for this user. Will generate new cart cache in view cart endpoint/logic
+	cartCacheKeyPattern := fmt.Sprintf("%s:*", s.Config.GetString("CACHE_ITEM_KEY_VIEW_CART_BY_CUSTOMER_ID"))
+	err = s.Cache.DeleteByKeyPattern(ctx.Request().Context(), cartCacheKeyPattern)
+	if err != nil {
+		log.Warn().Err(err).Msgf("Failed to invalidate/delete cart cache by customer id %s", customerID)
 		return
 	}
 
