@@ -46,6 +46,7 @@ This project uses Clean Architecture Concept (modified) and [Echo Go Framework](
 4. Get Product List by Product Category ID: GET /products/categories/:category_id
    - No Auth.
    - JSON request body required.
+   - There is a URL query param `next` for next page token because this endpoint only returns 10 data per request (I used pagination feature).
 5. Add a Product to Cart: POST /carts
    - Authentication: Bearer token (JWT).
    - JSON request body required.
