@@ -7,8 +7,6 @@ Online Store API by Ahmad Dzaki Naufal.
 - Redis
 - Docker (Because we need to upload this Go app docker image to docker hub).
 
-
-
 ## How to Start
 These steps will show you only to start the app with its dependencies with Docker
 - Clone this repo.
@@ -31,7 +29,7 @@ This project uses Clean Architecture Concept (modified) and [Echo Go Framework](
 - A customer can only checkout products with the quantity the same as in his/her cart & cart items.
 - A customer can own only one address.
 - A customer can own only one active cart (not cart item).
-- A valid password have a minimum 6 characters.
+- A valid password have a minimum 6 characters and can be a combination of anything.
 - Delete product endpoint is just only to delete a product/cart item in the cart. So it will not empty the cart.
 - Get products by category is the user has seen the product category list page and when selected, the frontend will only send the category ID.
 - In the registration process, there is a process for creating a cart for the first time for the user which is carried out asynchronously. if it fails, it can be handled at the add product endpoint.
