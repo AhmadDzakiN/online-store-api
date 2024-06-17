@@ -7,6 +7,8 @@ Online Store API by Ahmad Dzaki Naufal.
 - Redis
 - Docker (Because we need to upload this Go app docker image to docker hub).
 
+
+
 ## How to Start
 These steps will show you only to start the app with its dependencies with Docker
 - Clone this repo.
@@ -15,6 +17,8 @@ These steps will show you only to start the app with its dependencies with Docke
 - Run `docker-compose up --build -d`. It will build up all of these project's dependencies (Go App & PostgreSQL db).
 - Wait a few minutes until all the docker containers are up. The app and database will run on 1323 and 5432 ports for the default.
 - There are [definition.sql](database/definition.sql) and [seeds.sql](database/seeds.sql) to help you build and seed the database. By default, these files will be executed in `docker-compose up` command
+
+> This app Docker Registry can be accessed using [this link](https://hub.docker.com/r/ahmaddzakin/my-online-store) 
 
 ## About the Project
 This project uses Clean Architecture Concept (modified) and [Echo Go Framework](https://echo.labstack.com/docs)
